@@ -24,6 +24,27 @@ class AdminController {
             'articles' => $articles
         ]);
     }
+    /**
+     * Affiche la page de monitoring.
+     * @return void
+     */
+
+    public function showStats() : void
+    {
+        // On vérifie que l'utilisateur est connecté.
+        $this->checkIfUserIsConnected();
+        
+        // on affiche les données.
+        $monitoringManager = new MonitoringManager();
+        $stats = $monitoringManager->extractStats();
+
+        // On affiche la page de monitoring.
+        $view = new View("Administration");
+        $view->render("monitoring", [
+            'stats' => $stats,
+        ]);
+
+    }
 
     /**
      * Vérifie que l'utilisateur est connecté.
@@ -176,4 +197,6 @@ class AdminController {
         // On redirige vers la page d'administration.
         Utils::redirect("admin");
     }
+
+
 }
