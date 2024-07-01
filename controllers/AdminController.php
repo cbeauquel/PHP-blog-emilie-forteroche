@@ -37,13 +37,12 @@ class AdminController {
         // on affiche les données.
         $monitoringManager = new MonitoringManager();
         $stats = $monitoringManager->extractStats();
-
+        
         // On affiche la page de monitoring.
         $view = new View("Administration");
         $view->render("monitoring", [
             'stats' => $stats,
         ]);
-
     }
 
     /**

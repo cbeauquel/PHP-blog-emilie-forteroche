@@ -6,15 +6,12 @@
 
 <h2>Statistiques de consultation</h2>
 
-<div class="statConsultations">
-    <?php foreach ($stats as $stat) { ?>
-        <div class="articleLine">
-            <div class="title"><?= $stat->getTitle() ?></div>
-            <div class="content"><?= ucfirst(Utils::convertDateToFrenchFormat($stat->getDateCreation())) ?></div>
-            <div class="content"><?= $stat->getNbViews() ?></div>
-            <div class="content"><?= $stat->getNbComments() ?></div>
-        </div>
-    <?php } ?>
+<div class="adminArticle">
+    <?php
+    Utils::createTable($stats);
+    //var_dump($_POST);
+    //var_dump(buildSortCol($colonnes, $header));
+    ?>
 </div>
 
 <nav>

@@ -87,4 +87,137 @@ class Utils {
         return $_REQUEST[$variableName] ?? $defaultValue;
     }
 
+    /**
+     * Cette méthode permet de générer un tableau avec des fonctions de tri 
+     * @param array $datas : les données d'un tableau associatif d'objets
+     * @return mixed : le tableau en html
+    */
+    public static function createTable(array $datas) : mixed {
+        if (empty($datas)) {
+        return "<p>Aucune donnée à afficher.</p>";
+        }
+        //On définit une fonction avec la classe "reflection" pour récupérer les entêtes du tableau avec le nom des propriétés contenue dans les méthodes get de la class monitoring
+        function getHeaders($objet) {
+            $reflection = new ReflectionClass($objet);
+            $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+            $headers = [];
+        
+            foreach ($methods as $method) {
+                if (strpos($method->name, 'get') === 0) {
+                    $property = lcfirst(substr($method->name, 3));
+                    $headers[] = $property;
+                }
+            }
+        
+            return $headers;
+        }
+
+        $headers = getHeaders($datas[0]);
+
+        /**
+        * On récupère les colonnes et ordres actuels depuis les paramètres d'URL
+        */
+        $colonnes = isset($_POST['colonnes']) ? explode(',', $_POST['colonnes']) : ['coin !'];
+        $ordres = isset($_POST['ordres']) ? explode(',', $_POST['ordres']) : ['asc'];
+
+        while (count($colonnes) > count($ordres)) $ordres[] = 'asc';
+        while (count($ordres) > count($colonnes)) $colonnes[] = 'idArticle';
+           
+
+        // Fonction pour générer les nouveaux paramètres d'URL
+        $colonnes = [$headers[0]];
+        var_dump($colonnes);
+
+        function buildSortCol($newColonne) {
+            global $colonnes, $ordres;
+            $colonnes_copy = $colonnes;
+            $ordres_copy = $ordres;
+
+            if (($key = array_search($newColonne, $colonnes_copy)) !== false) {
+                $ordres_copy[$key] = $ordres_copy[$key] === 'asc' ? 'desc' : 'asc';
+            } else {
+                $colonnes_copy[] = $newColonne;
+                $ordres_copy[] = 'asc';
+            }
+
+            return implode(',', $colonnes_copy);
+        }
+        var_dump(buildSortCol($colonnes));
+
+        // Fonction pour générer les nouveaux paramètres d'URL
+        function buildSortOrd($newColonne) {
+            global $colonnes, $ordres;
+            $colonnes_copy = $colonnes;
+            $ordres_copy = $ordres;
+
+            if (($key = array_search($newColonne, $colonnes_copy)) !== false) {
+                $ordres_copy[$key] = $ordres_copy[$key] === 'asc' ? 'desc' : 'asc';
+            } else {
+                $colonnes_copy[] = $newColonne;
+                $ordres_copy[] = 'asc';
+            }
+
+            return implode(',', $ordres_copy);
+        }
+
+        // On définit une fonction pour accéder aux propriétés via les getters
+        function getProperty($objet, $property) {
+            $method = 'get' . ucfirst($property);
+            if (method_exists($objet, $method)) {
+                return $objet->$method();
+            }
+
+            return null;
+        }
+
+        // Fonction de tri utilisant les getters
+        usort($datas, function($a, $b) use ($colonnes, $ordres) {
+            foreach($colonnes as $index => $colonne){
+                $ordre = $ordres[$index];
+                $valA = getProperty($a, $colonne);
+                $valB = getProperty($b, $colonne);
+
+                if ($valA != $valB) {
+                    $result = $valA < $valB ? -1 : 1;
+                    return $ordre === 'asc' ? $result : -$result;
+                }
+            }
+            return 0;
+        });
+        
+         ?>
+        <table>
+        <thead>
+            <tr>
+                <?php foreach ($headers as $header): ?>
+                    <th>                            
+                        <form method="post" id="entetes" action="">
+                            <input type="hidden" name="colonnes" value='<?= $header ?>'/>
+                            <input type="hidden" name="ordres" value="croissant"/>
+                        </form>
+                        <a href="#" onclick='document.getElementById("entetes").submit()'>
+                            <?php echo ucfirst($header); ?>
+                            <?php
+                            if (($key = array_search($header, $colonnes)) !== false) {
+                                echo $ordres[$key] === 'asc' ? '▲' : '▼';
+                            }
+                            ?>
+                        </a>
+                    </th>
+                <?php endforeach; ?>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($datas as $data): ?>
+                <tr>
+                    <?php foreach ($headers as $header): ?>
+                        <td><?php echo htmlspecialchars(getProperty($data, $header)); ?></td>
+                    <?php endforeach; ?>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+        <?php
+                    return null;
+            }
 }
