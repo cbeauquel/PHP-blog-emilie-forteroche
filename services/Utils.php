@@ -92,7 +92,7 @@ class Utils {
      * @param array $datas : les données d'un tableau associatif d'objets
      * @return mixed : le tableau en html
     */
-    public static function createTable(array $datas) : mixed {
+    public static function createTable(array $datas) {
         if (empty($datas)) {
         return "<p>Aucune donnée à afficher.</p>";
         }
@@ -117,48 +117,10 @@ class Utils {
         /**
         * On récupère les colonnes et ordres actuels depuis les paramètres d'URL
         */
-        $colonnes = isset($_POST['colonnes']) ? explode(',', $_POST['colonnes']) : ['coin !'];
-        $ordres = isset($_POST['ordres']) ? explode(',', $_POST['ordres']) : ['asc'];
+        global $colonne, $ordre;
+        $colonne = isset($_POST['colonne']) ? $_POST['colonne'] : 'title';
+        $ordre = isset($_POST['ordre']) ? $_POST['ordre'] : $ordre = 'asc';
 
-        while (count($colonnes) > count($ordres)) $ordres[] = 'asc';
-        while (count($ordres) > count($colonnes)) $colonnes[] = 'idArticle';
-           
-
-        // Fonction pour générer les nouveaux paramètres d'URL
-        $colonnes = [$headers[0]];
-        var_dump($colonnes);
-
-        function buildSortCol($newColonne) {
-            global $colonnes, $ordres;
-            $colonnes_copy = $colonnes;
-            $ordres_copy = $ordres;
-
-            if (($key = array_search($newColonne, $colonnes_copy)) !== false) {
-                $ordres_copy[$key] = $ordres_copy[$key] === 'asc' ? 'desc' : 'asc';
-            } else {
-                $colonnes_copy[] = $newColonne;
-                $ordres_copy[] = 'asc';
-            }
-
-            return implode(',', $colonnes_copy);
-        }
-        var_dump(buildSortCol($colonnes));
-
-        // Fonction pour générer les nouveaux paramètres d'URL
-        function buildSortOrd($newColonne) {
-            global $colonnes, $ordres;
-            $colonnes_copy = $colonnes;
-            $ordres_copy = $ordres;
-
-            if (($key = array_search($newColonne, $colonnes_copy)) !== false) {
-                $ordres_copy[$key] = $ordres_copy[$key] === 'asc' ? 'desc' : 'asc';
-            } else {
-                $colonnes_copy[] = $newColonne;
-                $ordres_copy[] = 'asc';
-            }
-
-            return implode(',', $ordres_copy);
-        }
 
         // On définit une fonction pour accéder aux propriétés via les getters
         function getProperty($objet, $property) {
@@ -171,9 +133,7 @@ class Utils {
         }
 
         // Fonction de tri utilisant les getters
-        usort($datas, function($a, $b) use ($colonnes, $ordres) {
-            foreach($colonnes as $index => $colonne){
-                $ordre = $ordres[$index];
+        usort($datas, function($a, $b) use ($colonne, $ordre) {
                 $valA = getProperty($a, $colonne);
                 $valB = getProperty($b, $colonne);
 
@@ -181,25 +141,26 @@ class Utils {
                     $result = $valA < $valB ? -1 : 1;
                     return $ordre === 'asc' ? $result : -$result;
                 }
-            }
             return 0;
         });
-        
          ?>
+
         <table>
         <thead>
             <tr>
                 <?php foreach ($headers as $header): ?>
                     <th>                            
-                        <form method="post" id="entetes" action="">
-                            <input type="hidden" name="colonnes" value='<?= $header ?>'/>
-                            <input type="hidden" name="ordres" value="croissant"/>
+                        <form method="post" id="entetes<?= $header ?>" action="">
+                            <input type="hidden" name="colonne" value='<?= $header; ?>'/>
+                            <input type="hidden" name="ordre" value='<?php if($ordre === 'asc') {echo 'dsc';} else {echo 'asc';}?>'/>
                         </form>
-                        <a href="#" onclick='document.getElementById("entetes").submit()'>
+                        <a href="#" onclick='document.getElementById("entetes<?= $header ?>").submit()'>
                             <?php echo ucfirst($header); ?>
                             <?php
-                            if (($key = array_search($header, $colonnes)) !== false) {
-                                echo $ordres[$key] === 'asc' ? '▲' : '▼';
+                            if ($ordre === 'asc') {
+                            echo '▼';
+                            } else {
+                                echo '▲';
                             }
                             ?>
                         </a>
@@ -218,6 +179,6 @@ class Utils {
         </tbody>
     </table>
         <?php
-                    return null;
-            }
+    return null;
+    }
 }
