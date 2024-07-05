@@ -6,9 +6,6 @@
  */
  class Monitoring extends AbstractEntity 
  {
-    private int $idArticle;
-    private string $title = "";
-    private string $dateCreation = "";
     private int $nbViews = 0;
     private int $nbComments = 0;
     private string $ipAdress ="";
@@ -16,42 +13,6 @@
     private string $pageTracked;
 
   
-    /**
-     * Getter pour l'id de l'article.
-     * @return int
-     */
-    public function getIdArticle(): int 
-    {
-        return $this->idArticle;
-    }
-
-    /**
-     * Setter pour l'id de l'article.
-     * @param int $idArticle
-     * @return void
-     */
-    public function setIdArticle(int $idArticle): void 
-    {
-        $this->idArticle = $idArticle;
-    }
-
-    /**
-     * Setter pour le titre.
-     * @param string $title
-     */
-    public function setTitle(string $title) : void 
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * Getter pour le titre.
-     * @return string
-     */
-    public function getTitle() : string 
-    {
-        return $this->title;
-    }
 
     /**
      * Getter pour la page suivie.
@@ -70,25 +31,6 @@
     public function setPageTracked(string $pageTracked): void 
     {
         $this->pageTracked = $pageTracked;
-    }
-
-
-     /**
-     * Setter pour la date de création. 
-     */
-    public function setDateCreation(string $dateCreation) : void 
-    {
-        $this->dateCreation = $dateCreation;
-    }
-
-    /**
-     * Getter pour la date de création.
-     * 
-     * @return string
-     */
-    public function getDateCreation() : string
-    {
-        return $this->dateCreation;
     }
 
 

@@ -149,8 +149,8 @@ class Utils {
         <thead>
             <tr>
                 <?php foreach ($headers as $header): ?>
-                    <th>                            
-                        <form method="post" id="entetes<?= $header ?>" action="">
+                    <th class="<?= $header; ?>">                            
+                        <form class="hidden" method="post" id="entetes<?= $header ?>" action="">
                             <input type="hidden" name="colonne" value='<?= $header; ?>'/>
                             <input type="hidden" name="ordre" value='<?php if($ordre === 'asc') {echo 'dsc';} else {echo 'asc';}?>'/>
                         </form>
@@ -172,7 +172,7 @@ class Utils {
             <?php foreach ($datas as $data): ?>
                 <tr>
                     <?php foreach ($headers as $header): ?>
-                        <td><?php echo htmlspecialchars(getProperty($data, $header)); ?></td>
+                        <td class="<?= $header; ?>"><?php echo htmlspecialchars(getProperty($data, $header)); ?></td>
                     <?php endforeach; ?>
                 </tr>
             <?php endforeach; ?>

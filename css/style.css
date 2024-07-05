@@ -116,6 +116,7 @@ form .formGrid .submit {
     display : flex;
     flex-direction: row;
     justify-content: center;
+    gap:20px;
 }
 
 /**
@@ -172,6 +173,39 @@ main {
     width: 80%;
     max-width: 1000px;
     margin: 0 50px 100px 50px;
+}
+
+.hidden{
+    display:none;
+}
+
+/*Affichage des tableaux (table - td)*/
+table {
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: var(--headerColor);
+    color:#ffffff;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: var(--headerPaleColor);
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--backgroundColor);
+}
+
+th.id, td.id {
+    display:none;
 }
 
 /* Affichage des articles */

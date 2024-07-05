@@ -29,19 +29,19 @@ class AdminController {
      * @return void
      */
 
-    public function showStats() : void
+    public function showStatsArticles() : void
     {
         // On vérifie que l'utilisateur est connecté.
         $this->checkIfUserIsConnected();
         
         // on affiche les données.
-        $monitoringManager = new MonitoringManager();
-        $stats = $monitoringManager->extractStats();
-        
+        $articleStatsManager = new ArticleStatsManager();
+        $statsArticle = $articleStatsManager->extractStatsArticle();
+
         // On affiche la page de monitoring.
         $view = new View("Administration");
         $view->render("monitoring", [
-            'stats' => $stats,
+            'statsArticle' => $statsArticle,
         ]);
     }
 

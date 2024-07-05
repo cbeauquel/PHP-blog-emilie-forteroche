@@ -6,11 +6,9 @@
 
 <h2>Statistiques de consultation</h2>
 
-<div class="adminArticle">
+<div>
     <?php
-    Utils::createTable($stats);
-    //var_dump($_POST);
-    //var_dump(buildSortCol($colonnes, $header));
+    Utils::createTable($statsArticle);
     ?>
 </div>
 

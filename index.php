@@ -78,7 +78,7 @@ try {
 
         case 'monitoring':
             $adminController = new AdminController();
-            $adminController->showStats();
+            $adminController->showStatsArticles();
             break;
     
         default:

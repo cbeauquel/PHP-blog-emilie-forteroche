@@ -5,28 +5,6 @@
  */
 class MonitoringManager extends AbstractEntityManager
 {
-
-    /**
-     * on récupère les données.
-     */
-    public function extractStats() : array {
-        $sql = "SELECT a. `title`, a.`id` as `IdArticle`,  a. `date_creation`, COUNT(DISTINCT(b.`id`)) as `nbViews`, COUNT(DISTINCT(c.`id`)) as `nbComments`, b. page_tracked as PageTracked, b. ip_adress as IpAdress, b. id 
-                FROM `article` a
-                LEFT JOIN `connections` b ON a. `id` = b. `id_article`
-                LEFT JOIN `comment` c ON a. `id` = c. `id_article`
-                GROUP BY a. `title`,  a.`id`
-                ORDER BY a.`id`";
-        $result = $this->db->query($sql);
-
-        $stats = [];
-        while ($stat = $result->fetch()) {
-            $stats[] = new Monitoring($stat);
-        }
-   
-
-    return $stats;
-    }
-
     public function collectStats() : void
     {
         // On récupère le nom de la page actuelle
@@ -69,106 +47,25 @@ class MonitoringManager extends AbstractEntityManager
             $_SESSION['visite_enregistree_' . $pageTracked] = true;
         }
     }  
+    
+    /**
+     * on récupère les données.
+     */
+    public function extractStats() : array {
+        $sql = "SELECT a. `title`, a.`id` as `IdArticle`,  a. `date_creation`, COUNT(DISTINCT(b.`id`)) as `nbViews`, COUNT(DISTINCT(c.`id`)) as `nbComments`, b. page_tracked as PageTracked, b. ip_adress as IpAdress, b. id 
+                FROM `article` a
+                LEFT JOIN `connections` b ON a. `id` = b. `id_article`
+                LEFT JOIN `comment` c ON a. `id` = c. `id_article`
+                GROUP BY a. `title`,  a.`id`
+                ORDER BY a.`id`";
+        $result = $this->db->query($sql);
 
-      /**
-     * Cette méthode permet de générer un tableau avec des fonctions de tri 
-     * @param array $datas : les données d'un tableau associatif d'objets
-     * @return mixed : le tableau en html
-    */
-    public static function createTable(array $datas) : mixed {
-        if (empty($datas)) {
-        return "<p>Aucune donnée à afficher.</p>";
+        $stats = [];
+        while ($stat = $result->fetch()) {
+            $stats[] = new Monitoring($stat);
         }
-        //On définit une fonction avec la classe "reflection" pour récupérer les entêtes du tableau avec le nom des propriétés contenue dans les méthodes get de la class monitoring
-        function getHeaders($objet) {
-            $reflection = new ReflectionClass($objet);
-            $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-            $headers = [];
-        
-            foreach ($methods as $method) {
-                if (strpos($method->name, 'get') === 0) {
-                    $property = lcfirst(substr($method->name, 3));
-                    $headers[] = $property;
-                }
-            }
-        
-            return $headers;
-        }
+   
 
-        $headers = getHeaders($datas[0]);
-
-        /**
-        * On récupère les colonnes et ordres actuels depuis les paramètres d'URL
-        */
-        $colonnes = isset($_POST['colonnes']) ? explode(',', $_POST['colonnes']) : ['coin !'];
-        $ordres = isset($_POST['ordres']) ? explode(',', $_POST['ordres']) : ['asc'];
-
-        while (count($colonnes) > count($ordres)) $ordres[] = 'asc';
-        while (count($ordres) > count($colonnes)) $colonnes[] = 'idArticle';
-           
-
-        // Fonction pour générer les nouveaux paramètres d'URL
-        $colonnes = [$headers[0]];
-
-        function buildSortCol($newColonne) {
-            global $colonnes, $ordres;
-            $colonnes_copy = $colonnes;
-            $ordres_copy = $ordres;
-
-            if (($key = array_search($newColonne, $colonnes_copy)) !== false) {
-                $ordres_copy[$key] = $ordres_copy[$key] === 'asc' ? 'desc' : 'asc';
-            } else {
-                $colonnes_copy[] = $newColonne;
-                $ordres_copy[] = 'asc';
-            }
-
-            return implode(',', $colonnes_copy);
-        }
-
-        // Fonction pour générer les nouveaux paramètres d'URL
-        function buildSortOrd($newColonne) {
-            global $colonnes, $ordres;
-            $colonnes_copy = $colonnes;
-            $ordres_copy = $ordres;
-
-            if (($key = array_search($newColonne, $colonnes_copy)) !== false) {
-                $ordres_copy[$key] = $ordres_copy[$key] === 'asc' ? 'desc' : 'asc';
-            } else {
-                $colonnes_copy[] = $newColonne;
-                $ordres_copy[] = 'asc';
-            }
-
-            return implode(',', $ordres_copy);
-        }
-
-        // On définit une fonction pour accéder aux propriétés via les getters
-        function getProperty($objet, $property) {
-            $method = 'get' . ucfirst($property);
-            if (method_exists($objet, $method)) {
-                return $objet->$method();
-            }
-
-            return null;
-        }
-
-        // Fonction de tri utilisant les getters
-        usort($datas, function($a, $b) use ($colonnes, $ordres) {
-            foreach($colonnes as $index => $colonne){
-                $ordre = $ordres[$index];
-                $valA = getProperty($a, $colonne);
-                $valB = getProperty($b, $colonne);
-
-                if ($valA != $valB) {
-                    $result = $valA < $valB ? -1 : 1;
-                    return $ordre === 'asc' ? $result : -$result;
-                }
-            }
-            return 0;
-        });
-         ?>
-        
-        
-        <?php
-                    return null;
+    return $stats;
     }
 }
