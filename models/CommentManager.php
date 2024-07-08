@@ -39,6 +39,24 @@ class CommentManager extends AbstractEntityManager
     }
 
     /**
+     * Récupère tous les commentaires par.
+     * @param int $idArticle : l'id de l'article.
+     * @return array : un tableau d'objets Comment.
+     */
+    public function getAllCommentsByArticle() : array
+    {
+        $sql = "SELECT * FROM comment GROUP BY `id_article`";
+        $result = $this->db->query($sql);
+        $comments = [];
+
+        while ($comment = $result->fetch()) {
+            $comments[] = new Comment($comment);
+        }
+        return $comments;
+    }
+
+
+    /**
      * Ajoute un commentaire.
      * @param Comment $comment : l'objet Comment à ajouter.
      * @return bool : true si l'ajout a réussi, false sinon.

@@ -45,6 +45,54 @@ class AdminController {
         ]);
     }
 
+   /**
+     * Affiche la page de gestion des commentaires.
+     * @return void
+     */
+
+     public function showCommentsArticles() : void
+     {
+         // On vérifie que l'utilisateur est connecté.
+         $this->checkIfUserIsConnected();
+         
+         // on affiche les données.
+         $idArticle = Utils::request("id", -1);
+         $commentManager = new CommentManager();
+         $comments = $commentManager->getAllCommentsByArticleId($idArticle);
+ 
+         // On affiche la page de gestion des commentaires.
+         $view = new View("Administration");
+         $view->render("displaycomments", [
+             'comments' => $comments,
+         ]);
+     }
+ 
+   /**
+     * Action de suppression d'un commentaire.
+     * @return void
+     */
+
+     public function deleteComment() : void
+     {
+         $this->checkIfUserIsConnected();
+ 
+         //on crée l'objet commentaire
+         $comment = new Comment([
+            'id' => $_POST['id'],
+            'pseudo' => $_POST['pseudo'],
+            'content' => $_POST['content'],
+            'dateCreation' => new DateTime($_POST['dateCreation']),
+         ]);
+
+         // On supprime l'article.
+         $CommentManager = new CommentManager();
+         $CommentManager->deleteComment($comment);
+        
+         // On redirige vers la page d'administration.
+         Utils::redirect("admin");
+     }
+ 
+ 
     /**
      * Vérifie que l'utilisateur est connecté.
      * @return void

@@ -2,15 +2,16 @@
 class ArticleStats extends AbstractEntity
 {
     private string $title = "";
-    private string $dateCreation = "";
+    private ?DateTime $dateCreation = null;
     private int $nbViews = 0;
-    private int $nbComments = 0;
+    private string $nbComments = "";
+
 
  /**
      * Setter pour le titre.
      * @param string $title
      */
-    public function setTitre(string $title) : void 
+    public function setTitle(string $title) : void 
     {
         $this->title = $title;
     }
@@ -24,15 +25,17 @@ class ArticleStats extends AbstractEntity
         return $this->title;
     }
 
- /**
+    /**
      * Setter pour la date de création. Si la date est une string, on la convertit en DateTime.
      * @param string|DateTime $dateCreation
      * @param string $format : le format pour la convertion de la date si elle est une string.
      * Par défaut, c'est le format de date mysql qui est utilisé. 
      */
-    public function setDate(string|DateTime $dateCreation, string $format = 'Y-m-d H:i:s') : void 
+    public function setDateCreation(string $dateCreation, string $format = 'Y-m-d H:i:s') : void 
     {
-        
+        if (is_string($dateCreation)) {
+            $dateCreation = DateTime::createFromFormat($format, $dateCreation);
+        }
         $this->dateCreation = $dateCreation;
     }
 
@@ -41,7 +44,7 @@ class ArticleStats extends AbstractEntity
      * Grâce au setter, on a la garantie de récupérer un objet DateTime.
      * @return DateTime
      */
-    public function getDate() : string
+    public function getDateCreation() : DateTime
     {
         return $this->dateCreation;
     }
@@ -50,7 +53,7 @@ class ArticleStats extends AbstractEntity
      * Setter pour le nombre de vues. 
      * @param int $nbViews
      */
-    public function setVues(int $nbViews) : void 
+    public function setNbViews(int $nbViews) : void 
     {
         $this->nbViews = $nbViews;
     }
@@ -68,7 +71,7 @@ class ArticleStats extends AbstractEntity
      * Setter pour le nombre de commentaires. 
      * @param int $nbViews
      */
-    public function setCommentaires(int $nbComments) : void 
+    public function setNbComments(string $nbComments) : void 
     {
         $this->nbComments = $nbComments;
     }
@@ -77,7 +80,7 @@ class ArticleStats extends AbstractEntity
      * Getter pour le nombre de commentaires. 
      * @return int
      */
-    public function getCommentaires() : int 
+    public function getCommentaires() : string 
     {
         return $this->nbComments;
     }

@@ -172,7 +172,13 @@ class Utils {
             <?php foreach ($datas as $data): ?>
                 <tr>
                     <?php foreach ($headers as $header): ?>
-                        <td class="<?= $header; ?>"><?php echo htmlspecialchars(getProperty($data, $header)); ?></td>
+                        <td class="<?= $header; ?>">
+                            <?php 
+                            if(is_object(getProperty($data, $header))){
+                                echo htmlspecialchars(getProperty($data, $header)->format('d-m-Y'));
+                            } else {
+                            echo htmlspecialchars(getProperty($data, $header));} ?></td>
+
                     <?php endforeach; ?>
                 </tr>
             <?php endforeach; ?>
