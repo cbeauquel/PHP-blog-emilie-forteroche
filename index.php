@@ -80,6 +80,11 @@ try {
             $adminController = new AdminController();
             $adminController->showStatsArticles();
             break;
+
+        case 'statsGlobales':
+            $adminController = new AdminController();
+            $adminController->showStats();
+            break;
     
         case 'displayComments':
             $adminController = new AdminController();

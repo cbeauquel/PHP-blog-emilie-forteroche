@@ -97,8 +97,8 @@ class Utils {
         return "<p>Aucune donnée à afficher.</p>";
         }
         //On définit une fonction avec la classe "reflection" pour récupérer les entêtes du tableau avec le nom des propriétés contenue dans les méthodes get de la class monitoring
-        function getHeaders($objet) {
-            $reflection = new ReflectionClass($objet);
+        function getHeaders($object) {
+            $reflection = new ReflectionClass($object);
             $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
             $headers = [];
         
@@ -117,29 +117,29 @@ class Utils {
         /**
         * On récupère les colonnes et ordres actuels depuis les paramètres d'URL
         */
-        global $colonne, $ordre;
-        $colonne = isset($_POST['colonne']) ? $_POST['colonne'] : 'title';
-        $ordre = isset($_POST['ordre']) ? $_POST['ordre'] : $ordre = 'asc';
+        global $column, $order;
+        $column = isset($_POST['colonne']) ? $_POST['colonne'] : 'title';
+        $order = isset($_POST['ordre']) ? $_POST['ordre'] : $order = 'asc';
 
 
         // On définit une fonction pour accéder aux propriétés via les getters
-        function getProperty($objet, $property) {
+        function getProperty($object, $property) {
             $method = 'get' . ucfirst($property);
-            if (method_exists($objet, $method)) {
-                return $objet->$method();
+            if (method_exists($object, $method)) {
+                return $object->$method();
             }
 
             return null;
         }
 
         // Fonction de tri utilisant les getters
-        usort($datas, function($a, $b) use ($colonne, $ordre) {
-                $valA = getProperty($a, $colonne);
-                $valB = getProperty($b, $colonne);
+        usort($datas, function($a, $b) use ($column, $order) {
+                $valA = getProperty($a, $column);
+                $valB = getProperty($b, $column);
 
                 if ($valA != $valB) {
                     $result = $valA < $valB ? -1 : 1;
-                    return $ordre === 'asc' ? $result : -$result;
+                    return $order === 'asc' ? $result : -$result;
                 }
             return 0;
         });
@@ -152,12 +152,12 @@ class Utils {
                     <th class="<?= $header; ?>">                            
                         <form class="hidden" method="post" id="entetes<?= $header ?>" action="">
                             <input type="hidden" name="colonne" value='<?= $header; ?>'/>
-                            <input type="hidden" name="ordre" value='<?php if($ordre === 'asc') {echo 'dsc';} else {echo 'asc';}?>'/>
+                            <input type="hidden" name="ordre" value='<?php if($order === 'asc') {echo 'dsc';} else {echo 'asc';}?>'/>
                         </form>
                         <a href="#" onclick='document.getElementById("entetes<?= $header ?>").submit()'>
                             <?php echo ucfirst($header); ?>
                             <?php
-                            if ($ordre === 'asc') {
+                            if ($order === 'asc') {
                             echo '▼';
                             } else {
                                 echo '▲';
@@ -175,9 +175,9 @@ class Utils {
                         <td class="<?= $header; ?>">
                             <?php 
                             if(is_object(getProperty($data, $header))){
-                                echo htmlspecialchars(getProperty($data, $header)->format('d-m-Y'));
+                                echo (ucfirst(Utils::convertDateToFrenchFormat(getProperty($data, $header))));
                             } else {
-                            echo htmlspecialchars(getProperty($data, $header));} ?></td>
+                            echo (getProperty($data, $header));} ?></td>
 
                     <?php endforeach; ?>
                 </tr>

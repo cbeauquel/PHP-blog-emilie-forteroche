@@ -21,8 +21,8 @@
 <nav>
     <div class="nav">
         <a class="submit" href="index.php?action=showUpdateArticleForm">Ajouter un article</a>
-        <a class="submit" href="index.php?action=statsArticle">Voir les statistiques</a>
-        <!-- <a class="submit" href="index.php?action=displayComments">Gérer les commentaires</a> -->
+        <a class="submit" href="index.php?action=statsArticle">Voir les statistiques des articles</a>
+        <a class="submit" href="index.php?action=statsGlobales">Statistiques globales</a>
 
     </div>
 </nav>

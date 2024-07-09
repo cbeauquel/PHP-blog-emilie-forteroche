@@ -49,15 +49,17 @@ class MonitoringManager extends AbstractEntityManager
     }  
     
     /**
-     * on récupère les données.
+     * Requête de récupération des données pour la page "statistiques globales
+     *
+     * @return array
      */
     public function extractStats() : array {
-        $sql = "SELECT a. `title`, a.`id` as `IdArticle`,  a. `date_creation`, COUNT(DISTINCT(b.`id`)) as `nbViews`, COUNT(DISTINCT(c.`id`)) as `nbComments`, b. page_tracked as PageTracked, b. ip_adress as IpAdress, b. id 
-                FROM `article` a
-                LEFT JOIN `connections` b ON a. `id` = b. `id_article`
-                LEFT JOIN `comment` c ON a. `id` = c. `id_article`
-                GROUP BY a. `title`,  a.`id`
-                ORDER BY a.`id`";
+        $sql = "SELECT CONCAT_WS(' ',`page_tracked`,`id_article`) as `pageTracked`, COUNT(`id`) as `nbViews`
+                FROM `connections`
+                WHERE MONTH(connection_date) = MONTH(CURRENT_DATE)
+                    AND YEAR(connection_date) = YEAR(CURRENT_DATE)
+                group by `pageTracked`
+                ";
         $result = $this->db->query($sql);
 
         $stats = [];
@@ -65,7 +67,6 @@ class MonitoringManager extends AbstractEntityManager
             $stats[] = new Monitoring($stat);
         }
    
-
     return $stats;
     }
 }

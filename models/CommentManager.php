@@ -12,7 +12,9 @@ class CommentManager extends AbstractEntityManager
      */
     public function getAllCommentsByArticleId(int $idArticle) : array
     {
-        $sql = "SELECT * FROM comment WHERE id_article = :idArticle";
+        $sql = "SELECT `pseudo`, `content`, `date_creation`, `id_article`, CONCAT('
+        <a href=\"index.php?action=deleteComment&id=',`id`,'\"','onclick=\'return confirm(\"Êtes-vous sûr de vouloir supprimer ce commentaire ?\")\'>Supprimer</a>') AS `delete`
+        FROM comment WHERE id_article = :idArticle";
         $result = $this->db->query($sql, ['idArticle' => $idArticle]);
         $comments = [];
 
@@ -37,24 +39,6 @@ class CommentManager extends AbstractEntityManager
         }
         return null;
     }
-
-    /**
-     * Récupère tous les commentaires par.
-     * @param int $idArticle : l'id de l'article.
-     * @return array : un tableau d'objets Comment.
-     */
-    public function getAllCommentsByArticle() : array
-    {
-        $sql = "SELECT * FROM comment GROUP BY `id_article`";
-        $result = $this->db->query($sql);
-        $comments = [];
-
-        while ($comment = $result->fetch()) {
-            $comments[] = new Comment($comment);
-        }
-        return $comments;
-    }
-
 
     /**
      * Ajoute un commentaire.

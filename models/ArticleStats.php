@@ -7,7 +7,7 @@ class ArticleStats extends AbstractEntity
     private string $nbComments = "";
 
 
- /**
+    /**
      * Setter pour le titre.
      * @param string $title
      */
@@ -44,7 +44,7 @@ class ArticleStats extends AbstractEntity
      * Grâce au setter, on a la garantie de récupérer un objet DateTime.
      * @return DateTime
      */
-    public function getDateCreation() : DateTime
+    public function getDate() : DateTime
     {
         return $this->dateCreation;
     }
@@ -84,8 +84,5 @@ class ArticleStats extends AbstractEntity
     {
         return $this->nbComments;
     }
-
-
-
 }
 

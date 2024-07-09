@@ -204,8 +204,14 @@ tbody tr:nth-child(even) {
     background-color: var(--backgroundColor);
 }
 
-th.id, td.id {
+th.id, td.id, th.idArticle, td.idArticle {
     display:none;
+}
+
+td.delete {
+    font-weight: bold;
+    text-decoration: underline;
+    color:var(--titleColor);
 }
 
 /* Affichage des articles */

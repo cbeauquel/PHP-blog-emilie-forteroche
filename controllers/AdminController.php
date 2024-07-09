@@ -45,6 +45,23 @@ class AdminController {
         ]);
     }
 
+    public function showStats() : void
+    {
+        // On vérifie que l'utilisateur est connecté.
+        $this->checkIfUserIsConnected();
+        
+        // on affiche les données.
+        $MonitoringManager = new MonitoringManager();
+        $stats = $MonitoringManager->extractStats();
+
+        // On affiche la page de monitoring.
+        $view = new View("Administration");
+        $view->render("statsGlobales", [
+            'stats' => $stats,
+        ]);
+    }
+
+
    /**
      * Affiche la page de gestion des commentaires.
      * @return void
@@ -77,12 +94,10 @@ class AdminController {
          $this->checkIfUserIsConnected();
  
          //on crée l'objet commentaire
-         $comment = new Comment([
-            'id' => $_POST['id'],
-            'pseudo' => $_POST['pseudo'],
-            'content' => $_POST['content'],
-            'dateCreation' => new DateTime($_POST['dateCreation']),
-         ]);
+         $id = $_GET['id'];
+         $CommentManager = new CommentManager();
+         $comment = $CommentManager->getCommentById($id);
+
 
          // On supprime l'article.
          $CommentManager = new CommentManager();
