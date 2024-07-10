@@ -3,7 +3,8 @@
  * Contrôleur de la partie admin.
  */
  
-class AdminController {
+class AdminController 
+{
 
     /**
      * Affiche la page d'administration.
@@ -45,6 +46,12 @@ class AdminController {
         ]);
     }
 
+    /**
+     * Affiche la page des statistiques globales
+     *
+     * @return void
+     */
+
     public function showStats() : void
     {
         // On vérifie que l'utilisateur est connecté.
@@ -81,9 +88,9 @@ class AdminController {
          $view = new View("Administration");
          $view->render("displaycomments", [
              'comments' => $comments,
-         ]);
+         ]); 
      }
- 
+     
    /**
      * Action de suppression d'un commentaire.
      * @return void
@@ -259,6 +266,4 @@ class AdminController {
         // On redirige vers la page d'administration.
         Utils::redirect("admin");
     }
-
-
 }

@@ -5,7 +5,8 @@
  * directement sans avoir besoin d'instancier un objet Utils.
  * Exemple : Utils::redirect('home'); 
  */
-class Utils {
+class Utils 
+{
     /**
      * Convertit une date vers le format de type "Samedi 15 juillet 2023" en francais.
      * @param DateTime $date : la date à convertir.
@@ -88,16 +89,20 @@ class Utils {
     }
 
     /**
-     * Cette méthode permet de générer un tableau avec des fonctions de tri 
+     * Cette méthode permet de générer un tableau avec des tris
+     * Ce tableau peut gérer l'affichage de tableaux d'objets y compris avec des objets date 
      * @param array $datas : les données d'un tableau associatif d'objets
      * @return mixed : le tableau en html
     */
-    public static function createTable(array $datas) {
+    public static function createTable(array $datas) : mixed
+    {
         if (empty($datas)) {
-        return "<p>Aucune donnée à afficher.</p>";
+            return "<p>Aucune donnée à afficher.</p>";
         }
+
         //On définit une fonction avec la classe "reflection" pour récupérer les entêtes du tableau avec le nom des propriétés contenue dans les méthodes get de la class monitoring
-        function getHeaders($object) {
+        function getHeaders($object) 
+        {
             $reflection = new ReflectionClass($object);
             $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
             $headers = [];
@@ -123,7 +128,8 @@ class Utils {
 
 
         // On définit une fonction pour accéder aux propriétés via les getters
-        function getProperty($object, $property) {
+        function getProperty($object, $property) 
+        {
             $method = 'get' . ucfirst($property);
             if (method_exists($object, $method)) {
                 return $object->$method();
@@ -133,7 +139,8 @@ class Utils {
         }
 
         // Fonction de tri utilisant les getters
-        usort($datas, function($a, $b) use ($column, $order) {
+        usort($datas, function($a, $b) use ($column, $order) 
+        {
                 $valA = getProperty($a, $column);
                 $valB = getProperty($b, $column);
 
@@ -143,48 +150,44 @@ class Utils {
                 }
             return 0;
         });
-         ?>
-
+        
+        ?>
         <table>
-        <thead>
-            <tr>
-                <?php foreach ($headers as $header): ?>
-                    <th class="<?= $header; ?>">                            
-                        <form class="hidden" method="post" id="entetes<?= $header ?>" action="">
-                            <input type="hidden" name="colonne" value='<?= $header; ?>'/>
-                            <input type="hidden" name="ordre" value='<?php if($order === 'asc') {echo 'dsc';} else {echo 'asc';}?>'/>
-                        </form>
-                        <a href="#" onclick='document.getElementById("entetes<?= $header ?>").submit()'>
-                            <?php echo ucfirst($header); ?>
-                            <?php
-                            if ($order === 'asc') {
-                            echo '▼';
-                            } else {
-                                echo '▲';
-                            }
-                            ?>
-                        </a>
-                    </th>
-                <?php endforeach; ?>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($datas as $data): ?>
+            <thead>
                 <tr>
                     <?php foreach ($headers as $header): ?>
-                        <td class="<?= $header; ?>">
-                            <?php 
-                            if(is_object(getProperty($data, $header))){
-                                echo (ucfirst(Utils::convertDateToFrenchFormat(getProperty($data, $header))));
-                            } else {
-                            echo (getProperty($data, $header));} ?></td>
-
+                        <th class="<?= $header; ?>">                            
+                            <form class="hidden" method="post" id="entetes<?= $header ?>" action="">
+                                <input type="hidden" name="colonne" value="<?= $header; ?>"/>
+                                <input type="hidden" name="ordre" value="<?= $order === 'asc' ? 'dsc' : 'asc'; ?>"/>
+                            </form>
+                            <a href="#" onclick='document.getElementById("entetes<?= $header ?>").submit()'>
+                                <?= ucfirst($header); ?>
+                                <?= $order === 'asc' ? '▼' : '▲'; ?>
+                            </a>
+                        </th>
                     <?php endforeach; ?>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php foreach ($datas as $data): ?>
+                    <tr>
+                        <?php foreach ($headers as $header): ?>
+                            <td class="<?= $header; ?>">
+                                <?php 
+                                if(is_object(getProperty($data, $header))){
+                                    echo (ucfirst(Utils::convertDateToFrenchFormat(getProperty($data, $header))));
+                                } else {
+                                    echo (getProperty($data, $header));
+                                } 
+                                ?>
+                            </td>
+                        <?php endforeach; ?>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
         <?php
-    return null;
+    return null; 
     }
 }

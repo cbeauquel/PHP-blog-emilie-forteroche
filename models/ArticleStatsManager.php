@@ -1,11 +1,19 @@
 <?php 
-class ArticleStatsManager extends AbstractEntityManager{
 
-     /**
+/**
+ * Classe qui gère la récupération des stats des articles
+ */
+class ArticleStatsManager extends AbstractEntityManager
+{
+    /**
      * on récupère les données sur l'article.
+     *
+     * @return array
      */
     public function extractStatsArticle() : array {
-        $sql = "SELECT a. `id`, a. `title` as `title`, a. `date_creation` as `date_creation`, COUNT(DISTINCT(b.`id`)) as `nbViews`, COUNT(DISTINCT(c.`id`)) as `nbComments`, b. id 
+        $sql = "SELECT a. `id`, a. `title` as `title`, a. `date_creation` as `date_creation`, 
+                COUNT(DISTINCT(b.`id`)) as `nbViews`, 
+                COUNT(DISTINCT(c.`id`)) as `nbComments`, b. id 
                 FROM `article` a
                 LEFT JOIN `connections` b ON a. `id` = b. `id_article`
                 LEFT JOIN `comment` c ON a. `id` = c. `id_article`

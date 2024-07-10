@@ -1,10 +1,14 @@
 <?php 
+/**
+ * Class qui décrit le comportement des statistiques de l'article
+ * les stats d'articles sont définies par un ID, un titre, une date de création, un nombre de vues et nombre de commentaires
+ */
 class ArticleStats extends AbstractEntity
 {
     private string $title = "";
     private ?DateTime $dateCreation = null;
     private int $nbViews = 0;
-    private string $nbComments = "";
+    private int $nbComments = 0;
 
 
     /**
@@ -69,9 +73,9 @@ class ArticleStats extends AbstractEntity
   
    /**
      * Setter pour le nombre de commentaires. 
-     * @param int $nbViews
+     * @param int $nbComments
      */
-    public function setNbComments(string $nbComments) : void 
+    public function setNbComments(int $nbComments) : void 
     {
         $this->nbComments = $nbComments;
     }
@@ -80,7 +84,7 @@ class ArticleStats extends AbstractEntity
      * Getter pour le nombre de commentaires. 
      * @return int
      */
-    public function getCommentaires() : string 
+    public function getCommentaires() : int
     {
         return $this->nbComments;
     }
