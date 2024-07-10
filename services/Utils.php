@@ -5,7 +5,8 @@
  * directement sans avoir besoin d'instancier un objet Utils.
  * Exemple : Utils::redirect('home'); 
  */
-class Utils {
+class Utils 
+{
     /**
      * Convertit une date vers le format de type "Samedi 15 juillet 2023" en francais.
      * @param DateTime $date : la date à convertir.
@@ -87,4 +88,106 @@ class Utils {
         return $_REQUEST[$variableName] ?? $defaultValue;
     }
 
+    /**
+     * Cette méthode permet de générer un tableau avec des tris
+     * Ce tableau peut gérer l'affichage de tableaux d'objets y compris avec des objets date 
+     * @param array $datas : les données d'un tableau associatif d'objets
+     * @return mixed : le tableau en html
+    */
+    public static function createTable(array $datas) : mixed
+    {
+        if (empty($datas)) {
+            return "<p>Aucune donnée à afficher.</p>";
+        }
+
+        //On définit une fonction avec la classe "reflection" pour récupérer les entêtes du tableau avec le nom des propriétés contenue dans les méthodes get de la class monitoring
+        function getHeaders($object) 
+        {
+            $reflection = new ReflectionClass($object);
+            $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+            $headers = [];
+        
+            foreach ($methods as $method) {
+                if (strpos($method->name, 'get') === 0) {
+                    $property = lcfirst(substr($method->name, 3));
+                    $headers[] = $property;
+                }
+            }
+        
+            return $headers;
+        }
+
+        $headers = getHeaders($datas[0]);
+
+        /**
+        * On récupère les colonnes et ordres actuels depuis les paramètres d'URL
+        */
+        global $column, $order;
+        $column = isset($_POST['colonne']) ? $_POST['colonne'] : 'title';
+        $order = isset($_POST['ordre']) ? $_POST['ordre'] : $order = 'asc';
+
+
+        // On définit une fonction pour accéder aux propriétés via les getters
+        function getProperty($object, $property) 
+        {
+            $method = 'get' . ucfirst($property);
+            if (method_exists($object, $method)) {
+                return $object->$method();
+            }
+
+            return null;
+        }
+
+        // Fonction de tri utilisant les getters
+        usort($datas, function($a, $b) use ($column, $order) 
+        {
+                $valA = getProperty($a, $column);
+                $valB = getProperty($b, $column);
+
+                if ($valA != $valB) {
+                    $result = $valA < $valB ? -1 : 1;
+                    return $order === 'asc' ? $result : -$result;
+                }
+            return 0;
+        });
+        
+        ?>
+        <table>
+            <thead>
+                <tr>
+                    <?php foreach ($headers as $header): ?>
+                        <th class="<?= $header; ?>">                            
+                            <form class="hidden" method="post" id="entetes<?= $header ?>" action="">
+                                <input type="hidden" name="colonne" value="<?= $header; ?>"/>
+                                <input type="hidden" name="ordre" value="<?= $order === 'asc' ? 'dsc' : 'asc'; ?>"/>
+                            </form>
+                            <a href="#" onclick='document.getElementById("entetes<?= $header ?>").submit()'>
+                                <?= ucfirst($header); ?>
+                                <?= $order === 'asc' ? '▼' : '▲'; ?>
+                            </a>
+                        </th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($datas as $data): ?>
+                    <tr>
+                        <?php foreach ($headers as $header): ?>
+                            <td class="<?= $header; ?>">
+                                <?php 
+                                if(is_object(getProperty($data, $header))){
+                                    echo (ucfirst(Utils::convertDateToFrenchFormat(getProperty($data, $header))));
+                                } else {
+                                    echo (getProperty($data, $header));
+                                } 
+                                ?>
+                            </td>
+                        <?php endforeach; ?>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php
+    return null; 
+    }
 }
