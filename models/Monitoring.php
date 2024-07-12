@@ -2,7 +2,7 @@
 
 /**
  * Entité monitoring, un monitoring est défini par les champs
- * id,  title, page_tracked, nb_views 
+ * id, page_tracked, nb_views 
  */
  class Monitoring extends AbstractEntity 
  {
@@ -10,7 +10,7 @@
     private string $vues;
 
     /**
-     * Setter pour l'id de l'article.
+     * Setter pour la page suivie.
      * @param string $pageTracked
      * @return void
     */
