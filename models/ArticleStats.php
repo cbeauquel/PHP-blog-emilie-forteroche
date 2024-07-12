@@ -5,19 +5,19 @@
  */
 class ArticleStats extends AbstractEntity
 {
-    private string $title = "";
-    private ?DateTime $dateCreation = null;
-    private int $nbViews = 0;
-    private int $nbComments = 0;
+    private string $titre = "";
+    private ?DateTime $date = null;
+    private int $vues = 0;
+    private int $commentaires = 0;
 
 
     /**
      * Setter pour le titre.
      * @param string $title
      */
-    public function setTitle(string $title) : void 
+    public function setTitre(string $titre) : void 
     {
-        $this->title = $title;
+        $this->titre = $titre;
     }
 
     /**
@@ -26,7 +26,7 @@ class ArticleStats extends AbstractEntity
      */
     public function getTitre() : string 
     {
-        return $this->title;
+        return $this->titre;
     }
 
     /**
@@ -35,12 +35,12 @@ class ArticleStats extends AbstractEntity
      * @param string $format : le format pour la convertion de la date si elle est une string.
      * Par défaut, c'est le format de date mysql qui est utilisé. 
      */
-    public function setDateCreation(string $dateCreation, string $format = 'Y-m-d H:i:s') : void 
+    public function setDate(string $date, string $format = 'Y-m-d H:i:s') : void 
     {
-        if (is_string($dateCreation)) {
-            $dateCreation = DateTime::createFromFormat($format, $dateCreation);
+        if (is_string($date)) {
+            $date = DateTime::createFromFormat($format, $date);
         }
-        $this->dateCreation = $dateCreation;
+        $this->date = $date;
     }
 
     /**
@@ -50,16 +50,16 @@ class ArticleStats extends AbstractEntity
      */
     public function getDate() : DateTime
     {
-        return $this->dateCreation;
+        return $this->date;
     }
 
     /**
      * Setter pour le nombre de vues. 
      * @param int $nbViews
      */
-    public function setNbViews(int $nbViews) : void 
+    public function setVues(int $Vues) : void 
     {
-        $this->nbViews = $nbViews;
+        $this->Vues = $Vues;
     }
 
     /**
@@ -68,16 +68,16 @@ class ArticleStats extends AbstractEntity
      */
     public function getVues() : int 
     {
-        return $this->nbViews;
+        return $this->Vues;
     }
   
    /**
      * Setter pour le nombre de commentaires. 
-     * @param int $nbComments
+     * @param int $commentaires
      */
-    public function setNbComments(int $nbComments) : void 
+    public function setCommentaires(int $commentaires) : void 
     {
-        $this->nbComments = $nbComments;
+        $this->commentaires = $commentaires;
     }
 
     /**
@@ -86,7 +86,7 @@ class ArticleStats extends AbstractEntity
      */
     public function getCommentaires() : int
     {
-        return $this->nbComments;
+        return $this->commentaires;
     }
 }
 

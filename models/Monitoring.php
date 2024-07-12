@@ -2,15 +2,15 @@
 
 /**
  * Entité monitoring, un monitoring est défini par les champs
- * id,  title, page_tracked, nb_views 
+ * id, page_tracked, nb_views 
  */
  class Monitoring extends AbstractEntity 
  {
     private string $pageTracked;
-    private string $nbViews;
+    private string $vues;
 
     /**
-     * Setter pour l'id de l'article.
+     * Setter pour la page suivie.
      * @param string $pageTracked
      * @return void
     */
@@ -30,11 +30,11 @@
 
       /**
      * Setter pour le nombre de vues. 
-     * @param int $nbViews
+     * @param int $vues
      */
-    public function setNbViews(int $nbViews) : void 
+    public function setVues(int $vues) : void 
     {
-        $this->nbViews = $nbViews;
+        $this->vues = $vues;
     }
 
     /**
@@ -43,6 +43,6 @@
      */
     public function getVues() : int 
     {
-        return $this->nbViews;
+        return $this->vues;
     }
  }
