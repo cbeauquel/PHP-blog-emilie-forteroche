@@ -107,9 +107,14 @@ class AdminController
 
 
          // On supprime l'article.
-         $CommentManager = new CommentManager();
-         $CommentManager->deleteComment($comment);
-        
+         $result = $CommentManager->deleteComment($comment);
+
+
+        // On vérifie que la suppression a bien fonctionné.
+        if (!$result) {
+            throw new Exception("Une erreur est survenue lors de la suppression du commentaire.");
+        }
+
          // On redirige vers la page d'administration.
          Utils::redirect("admin");
      }
